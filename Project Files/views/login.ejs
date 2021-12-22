@@ -34,17 +34,27 @@
         <h1>Welcome</h1>
     </div>
     <div class="cont">
-        <form method="POST" action='/login'>
+        <div>
+            <% for(var i=0;i<errors.length;i++){%>
+                <ul>
+                    <li>
+                        <%=errors[i]%>
+                    </li>
+                </ul>
+
+                <%}%>
+        </div>
+        <form method="POST" action='/'>
             Username:<br>
-            <input type="text" name="username">
+            <input type="text" name="username" minlength='8' required>
             <br> Password:
             <br>
-            <input type="password" name="password">
+            <input type="password" name="password" minlength='8' required>
             <br><br>
             <input type="submit" value="Login">
         </form>
         <br>
-        <a href="<%=link%>">I dont have an account</a>
+        <a href='registration'>I dont have an account</a>
     </div>
 </body>
 

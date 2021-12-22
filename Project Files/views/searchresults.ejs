@@ -38,5 +38,22 @@
             </form>
         </div>
     </nav>
+        <% for(var x of foo){ %>
+            <% 
+            if(x.name == "boxing bag") str = '/boxing';
+            else if(x.name == "tennis racket") str = "/tennis";
+            else if(x.name == "leaves of grass") str = "/leaves";
+            else if(x.name == "the sun and her flowers") str = "/sun";
+            else if(x.name == "galaxy s21 ultra") str = "/galaxy";
+            else str = "iphone";
+            %>
+                <div class='Huss' style="display:inline-block;margin-inline-start: 5%;" >
+                    <img src = <%= x.img %> width = "193" height="300">
+                    <br>
+                    <label style="color:cadetblue;font-size: x-large;font-family:'Courier New', Courier, monospace;"><%= x.name %></label>
+                    <br>
+                    <button onclick="location.href = '<%=str%>';" style="border-radius: 12px;color:aliceblue;font-size: large;background-color:brown;">View</button>
+                </div>
+        <% } %>
 </body>
 </html>

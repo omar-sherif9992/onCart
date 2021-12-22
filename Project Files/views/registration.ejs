@@ -2,6 +2,8 @@
 <html lang="en">
 
 <head>
+    <link rel="stylesheet" href='../public/css/style.css'>
+
     <style>
         body {
             background-image: url("background2.jpg");
@@ -35,13 +37,31 @@
         <h1>Registration</h1>
     </div>
     <div class="cont">
+        <div>
+            <% for(var i=0;i<errors.length;i++){%>
+                <ul>
+                    <li>
+                        <%=errors[i]%>
+                    </li>
+                </ul>
+
+                <%}%>
+        </div>
+
+
         <form method='post' action='/registration'>
             Username: <br>
-            <input type="text" id="user" name="username"> <br> Password: <br>
-            <input type="password" id="password" name="password"> <br> <br>
-            <input type="submit" id="simple_click" class="btn btn-secondary" value="Register"> <br>
+            <input type="text" id="user" name="username" class='username' minlength='8' required> <br> Password: <br>
+            <input type="password" id="password" name="password" class='password' minlength='8' required> <br>
+            <br>
+            <input type="submit" id="simple_click" class="btn btn-secondary submit" value="Register"> <br>
         </form>
     </div>
+    <script src='../public/scripts/registeration.js' charset='utf-8'>
+    </script>
+
 </body>
+
+
 
 </html>

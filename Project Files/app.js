@@ -11,7 +11,9 @@ const port = 3020; //note :form action should be written in it the route
 const md5 = require('md5');
 const session = require('express-session');
 
-app.listen(3020);
+app.listen(port, () =>{
+    console.log(`Website is running at url http://localhost:${port}`);
+});
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({ extended: true })); // to be able to parsing into post request
@@ -189,121 +191,39 @@ async function addToCart(uid,iid,count) {
 }    
 
 app.post("/boxing",async function (req, res) {
-    await client.connect();
-    var items = await client.db('myDB').collection('Item').find().toArray();
-    var carts = await client.db('myDB').collection('Cart').find().toArray();
-    await client.close();
     const itemName = "Boxing Bag";
-    let itemData;
-    for(let i = 0;i < items.length;i++){
-        if(items[i].name === itemName){
-            itemData = items[i];
-        }
-    }
-    let user = currentUser._id;
-    let item = itemData._id;
-    let count = 1;
-    let flag = false;
-    for(let j = 0;j < carts.length;j++){
-        if(carts[j].userID === user && carts[j].itemID === item){
-            db.Cart.update({userID: user, itemID: item},{$set : {quantity : (carts[j].quantity + 1)}});
-            flag = true;
-        }
-    }
-    if(!flag){
-        addToCart(user,item,count);
-    }
+    handleAddToCartButton(itemName);
     res.redirect("/boxing");
 });
 
 app.post("/galaxy", function (req, res) {
-    await client.connect();
-    var items = await client.db('myDB').collection('Item').find().toArray();
-    await client.close();
     const itemName = "Galaxy S21 Ultra";
-    let item;
-    for(var i = 0;i < items.length;i++){
-        if(items[i].name === itemName){
-            item = items[i];
-        }
-    }
-    let userID = currentUser._id;
-    let itemID = item._id;
-    let count = 1;
-    addToCart(userID,itemID,count);
-    app.redirect("/galaxy");
+    handleAddToCartButton(itemName);
+    res.redirect("/galaxy");
 });
 
 app.post("/iphone", function (req, res) {
-    await client.connect();
-    var items = await client.db('myDB').collection('Item').find().toArray();
-    await client.close();
     const itemName = "iPhone 13 Pro";
-    let item;
-    for(var i = 0;i < items.length;i++){
-        if(items[i].name === itemName){
-            item = items[i];
-        }
-    }
-    let userID = currentUser._id;
-    let itemID = item._id;
-    let count = 1;
-    addToCart(userID,itemID,count);
-    app.redirect("/iphone");
+    handleAddToCartButton(itemName);
+    res.redirect("/iphone");
 });
 
 app.post("/leaves", function (req, res) {
-    await client.connect();
-    var items = await client.db('myDB').collection('Item').find().toArray();
-    await client.close();
     const itemName = "Leaves Of Grass";
-    let item;
-    for(var i = 0;i < items.length;i++){
-        if(items[i].name === itemName){
-            item = items[i];
-        }
-    }
-    let userID = currentUser._id;
-    let itemID = item._id;
-    let count = 1;
-    addToCart(userID,itemID,count);
-    app.redirect("/leaves");
+    handleAddToCartButton(itemName);
+    res.redirect("/leaves");
 });
 
 app.post("/sun", function (req, res) {
-    await client.connect();
-    var items = await client.db('myDB').collection('Item').find().toArray();
-    await client.close();
     const itemName = "The Sun and Her Flowers";
-    let item;
-    for(var i = 0;i < items.length;i++){
-        if(items[i].name === itemName){
-            item = items[i];
-        }
-    }
-    let userID = currentUser._id;
-    let itemID = item._id;
-    let count = 1;
-    addToCart(userID,itemID,count);
-    app.redirect("/sun");
+    handleAddToCartButton(itemName);
+    res.redirect("/sun");
 });
 
 app.post("/tennis", function (req, res) {
-    await client.connect();
-    var items = await client.db('myDB').collection('Item').find().toArray();
-    await client.close();
     const itemName = "Tennis Racket";
-    let item;
-    for(var i = 0;i < items.length;i++){
-        if(items[i].name === itemName){
-            item = items[i];
-        }
-    }
-    let userID = currentUser._id;
-    let itemID = item._id;
-    let count = 1;
-    addToCart(userID,itemID,count);
-    app.redirect("/tennis");
+    handleAddToCartButton(itemName);
+    res.redirect("/tennis");
 });
 
 
@@ -404,3 +324,29 @@ async function FindUser(username, password) {
     return false;
 }
 
+async function handleAddToCartButton(itemName){
+    await client.connect();
+    let items = await client.db('myDB').collection('Item').find().toArray();
+    let carts = await client.db('myDB').collection('Cart').find().toArray();
+    await client.close();
+    let itemData;
+    for(let i = 0;i < items.length;i++){
+        if(items[i].name === itemName){
+            itemData = items[i];
+            break;
+        }
+    }
+    let user = currentUser._id;
+    let item = itemData._id;
+    let count = 1;
+    let flag = false;
+    for(let j = 0;j < carts.length;j++){
+        if(carts[j].userID === user && carts[j].itemID === item){
+            db.Cart.update({userID: user, itemID: item},{$set : {quantity : (carts[j].quantity + 1)}});
+            flag = true;
+        }
+    }
+    if(!flag){
+        addToCart(user,item,count);
+    }
+}

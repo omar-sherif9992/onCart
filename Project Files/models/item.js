@@ -1,23 +1,21 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
-const userSchema = new mongoose.Schema({ // schema
+const itemSchema = new mongoose.Schema({ // schema
 
-    username: {
+    name: {
         type: String,
         required: [true, "Please enter your username"],
         lowercase: true,
     }, // always convert userName to lowercase
-    password: {
+    img: {
         type: String,
-        minLength: 8,
+        //minLength: 8,
         required: [true, "Please enter your Password"]
-
-
     },
-    cart: [Object]
+    price: Number
 }, { timestamps: true });
 
 
-const User = new mongoose.model("User", userSchema); // name of the table (class like oop) although we will get a collection that will be called in plural
+const Item = new mongoose.model("Item", itemSchema); // name of the table (class like oop) although we will get a collection that will be called in plural
 
-module.exports = User;
+module.exports = Item;

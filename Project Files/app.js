@@ -11,7 +11,7 @@ const port = 3020; //note :form action should be written in it the route
 const md5 = require('md5');
 const session = require('express-session');
 
-app.listen(port, () =>{
+app.listen(port, () => {
     console.log(`Website is running at url http://localhost:${port}`);
 });
 
@@ -171,14 +171,18 @@ async function search(tmp) {
 //Omar El Meteiny
 //Ziad
 
-async function addToCart(uid,iid,count) {
+async function addToCart(uid, iid, count) {
     await client.connect();
     await client.db('myDB').collection('Cart').insertOne(new Cart({ userID: uid, itemID: iid, quantity: count }));
     await client.close();
-}    
+}
 
-app.post("/boxing",async function (req, res) {
+app.post("/boxing", async function (req, res) {
     const itemName = "Boxing Bag";
+    if (!getCurrentUser()) {
+        res.redirect('/');
+        return;
+    }
     handleAddToCartButton(itemName);
     res.redirect("/boxing");
 });
@@ -264,6 +268,10 @@ app.get('/leaves', function (req, res) {
     res.render('leaves');
 });
 app.get('/boxing', function (req, res) {
+    if (!getCurrentUser()) {
+        res.redirect('/');
+        return;
+    }
     res.render('boxing');
 });
 app.get('/tennis', function (req, res) {
@@ -282,6 +290,10 @@ app.get('/galaxy', function (req, res) {
 app.use((req, res) => {
     res.status(404).render('error');
 });
+
+function getCurrentUser() {
+    return currentUser;
+}
 
 async function InsertUser(username, pass) {
     await client.connect();
@@ -311,29 +323,34 @@ async function FindUser(username, password) {
     return false;
 }
 
-async function handleAddToCartButton(itemName){
+async function handleAddToCartButton(itemName) {
+    const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true }); //inside request
     await client.connect();
-    let items = await client.db('myDB').collection('Item').find().toArray();
-    let carts = await client.db('myDB').collection('Cart').find().toArray();
-    await client.close();
-    let itemData;
-    for(let i = 0;i < items.length;i++){
-        if(items[i].name === itemName){
-            itemData = items[i];
-            break;
+    try {
+        let items = await client.db('myDB').collection('Item').find().toArray();
+        let carts = await client.db('myDB').collection('Cart').find().toArray();
+        let itemData;
+        for (let i = 0; i < items.length; i++) {
+            if (items[i].name === itemName) {
+                itemData = items[i];
+                break;
+            }
         }
-    }
-    let user = currentUser._id;
-    let item = itemData._id;
-    let count = 1;
-    let flag = false;
-    for(let j = 0;j < carts.length;j++){
-        if(carts[j].userID === user && carts[j].itemID === item){
-            db.Cart.update({userID: user, itemID: item},{$set : {quantity : (carts[j].quantity + 1)}});
-            flag = true;
+        let user = currentUser._id.toString();
+        let item = itemData._id.toString();
+        let count = 1;
+        let flag = false;
+        for (let j = 0; j < carts.length; j++) {
+            if (carts[j].userID === user && carts[j].itemID === item) {
+                await client.db("myDB").collection("Cart").updateOne({ userID: user, itemID: item }, { $set: { quantity: (carts[j].quantity + 1) } });
+                flag = true;
+            }
+
         }
-    }
-    if(!flag){
-        addToCart(user,item,count);
+        if (!flag) {
+            addToCart(user, item, count);
+        }
+    } finally {
+        await client.close();
     }
 }

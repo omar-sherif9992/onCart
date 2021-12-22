@@ -30,7 +30,8 @@ var { MongoClient } = require('mongodb');
 const e = require('express');
 const User = require('./models/user');
 const Item = require('./models/item');
-var uri = "mongodb+srv://admin:admin@cluster0.l5reo.mongodb.net/myDB?retryWrites=true&w=majority"
+const Cart = require('./models/cart');
+const uri = process.env.ATLAS_URI;
 var client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true }); //inside request
 //Mongo Atlas Conncetion
 async function makeUSERCOLLECTION() {
@@ -48,11 +49,14 @@ async function makeITEMCOLLECTION() {
 
 async function main() {
     var { MongoClient } = require('mongodb');
-    var uri = "mongodb+srv://admin:admin@cluster0.l5reo.mongodb.net/myDB?retryWrites=true&w=majority"
     var client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     await client.connect();
     var user = { name: "Hussein", password: "hello" };
     var user2 = { name: "Husein", password: "hello" };
+    // await makeUSERCOLLECTION();
+    // await makeCARTCOLLECTION();
+    // await makeITEMCOLLECTION();
+    //await addItems();
     var x = await client.db('myDB').collection('collection1').find().toArray();
     for (var i = 0; i < x.length; i++) {
         if (x[i].name == user2.name && x[i].password == user2.password) {
@@ -68,18 +72,6 @@ async function main() {
 //main();
 
 var currentUser;
-
-//Inserting the ITEMS into the DATABASE
-async function addItems() {
-    await client.connect();
-    await client.db('myDB').collection('Item').insertOne(new Item({ name: "Boxing Bag", img: "boxing.jpg", price: 500 }));
-    await client.db('myDB').collection('Item').insertOne(new Item({ name: "Tennis Racket", img: "tennis.jpg", price: 925 }));
-    await client.db('myDB').collection('Item').insertOne(new Item({ name: "Leaves of Grass", img: "leaves.jpg", price: 300 }));
-    await client.db('myDB').collection('Item').insertOne(new Item({ name: "The Sun and Her Flowers", img: "sun.jpg", price: 225 }));
-    await client.db('myDB').collection('Item').insertOne(new Item({ name: "Galaxy S21 Ultra", img: "galaxy.jpg", price: 20500 }));
-    await client.db('myDB').collection('Item').insertOne(new Item({ name: "iPhone 13 Pro", img: "iphone.jpg", price: 24225 }));
-    await client.close();
-}
 
 // omar sherif ali
 app.get('/home', function (req, res) {
@@ -178,11 +170,6 @@ async function search(tmp) {
 
 //Omar El Meteiny
 //Ziad
-async function makeCARTCOLLECTION() {
-    await client.connect();
-    await client.db('myDB').createCollection("Cart");
-    await client.close();
-}
 
 async function addToCart(uid,iid,count) {
     await client.connect();

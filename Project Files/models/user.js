@@ -13,8 +13,7 @@ const userSchema = new mongoose.Schema({ // schema
         required: [true, "Please enter your Password"]
 
 
-    },
-    cart: [Object]
+    }
 }, { timestamps: true });
 
 

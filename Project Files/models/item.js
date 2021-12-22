@@ -5,7 +5,7 @@ const itemSchema = new mongoose.Schema({ // schema
     name: {
         type: String,
         required: [true, "Please enter your username"],
-        lowercase: true,
+        lowercase: false,
     }, // always convert userName to lowercase
     img: {
         type: String,

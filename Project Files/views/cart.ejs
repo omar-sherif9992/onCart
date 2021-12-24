@@ -47,8 +47,11 @@
             <img src= <%=a.item.img%> width="210" height = "300">
             <br>
             <p style="color:cadetblue;font-family:'Courier New', Courier, monospace;">Price <%=a.item.price%>L.E Amount <%=a.quan%></p>
-            <button type="submit" name="action" value="<%=a.item.name%> R"  style="background-color: red; width: 30px; height: 30px;color: white;position: absolute;left: 65px;">-</button>
-            <button type="submit" name="action" value="<%=a.item.name%> A" style="background-color: green; width: 30px; height: 30px;color: white;position: absolute;left: 95px;">+</button>
+            <div class="row">
+                <div class="col-4 offset-2"><button type="submit" name="action" value="<%=a.item.name%> R" class="btn btn-small btn-block btn-danger" >-</button></div>
+                <div class="col-4"><button type="submit" name="action" value="<%=a.item.name%> A" class="btn btn-small btn-block btn-success">+</button></div>
+                <div class="clearfix"></div>
+            </div>
             </div>
         <% }) %>
         <br>

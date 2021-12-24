@@ -1,3 +1,4 @@
+require('dotenv').config();
 const { MongoClient } = require('mongodb');
 const User = require('./models/user');
 const Item = require('./models/item');
@@ -6,14 +7,32 @@ const uri = process.env.ATLAS_URI;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true }); //inside request
 //Mongo Atlas Conncetion
 async function makeUserCollection() {
+    try {
+        await client.db('myDB').dropCollection("User");
+    }
+    catch {
+
+    }
     await client.db('myDB').createCollection("User");
 }
 
 async function makeItemCollection() {
+    try {
+        await client.db('myDB').dropCollection("Item");
+    }
+    catch {
+
+    }
     await client.db('myDB').createCollection("Item");
 }
 
 async function makeCartCollection() {
+    try {
+        await client.db('myDB').dropCollection("Cart");
+    }
+    catch {
+
+    }
     await client.db('myDB').createCollection("Cart");
 }
 
@@ -29,7 +48,6 @@ async function addItems() {
 
 async function main() {
     var { MongoClient } = require('mongodb');
-    const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     await client.connect();
     await makeUserCollection();
     await makeCartCollection();

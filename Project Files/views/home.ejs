@@ -42,6 +42,7 @@
             left: 80px;
             top: 370px;
         }
+        
     </style>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -58,6 +59,7 @@
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
+        <%- include("homecart") %>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
             </ul>
@@ -94,7 +96,9 @@
         <button onclick="location.href = '/sports';" id="sports" class="btn btn-secondary ml-3"> View </button>
     </div>
     <div class="cart">
-        <button onclick="location.href = '/cart';" id="cart" class="btn btn-secondary ml-3" style="width: 300px;">Cart</button>
+        <form action="/home" method="post">
+            <button type="button" onclick="location.href = '/cart';" id="cart" class="btn btn-secondary ml-3" style="width: 300px;">Cart</button>
+        </form>
     </div>
 </body>
 </html>

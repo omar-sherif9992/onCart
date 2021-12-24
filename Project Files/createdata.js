@@ -29,6 +29,7 @@ async function addItems() {
 
 async function main() {
     var { MongoClient } = require('mongodb');
+    const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     await client.connect();
     await makeUserCollection();
     await makeCartCollection();

@@ -23,11 +23,12 @@
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-2">
-        <a class="navbar-brand" style="color: rgb(191, 255, 161)">Cart</a>
+    <a class="navbar-brand" style="color: rgb(191, 255, 161)">Cart(<%=totalAmount%>)</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
+        <%- include("homecart") %>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
             </ul>
@@ -38,5 +39,24 @@
             </form>
         </div>
     </nav>
+
+   <form action="/cart" method="post">
+        <% array.forEach(function(a){ %>
+            <div style="display:inline-block;margin-inline-start: 5%;position: relative;">
+            <p style="color:cadetblue;font-size: x-large;font-family:'Courier New', Courier, monospace;"><%= a.item.name %></p>
+            <img src= <%=a.item.img%> width="210" height = "300">
+            <br>
+            <p style="color:cadetblue;font-family:'Courier New', Courier, monospace;">Price <%=a.item.price%>L.E Amount <%=a.quan%></p>
+            <button type="submit" name="action" value="<%=a.item.name%> R"  style="background-color: red; width: 30px; height: 30px;color: white;position: absolute;left: 65px;">-</button>
+            <button type="submit" name="action" value="<%=a.item.name%> A" style="background-color: green; width: 30px; height: 30px;color: white;position: absolute;left: 95px;">+</button>
+            </div>
+        <% }) %>
+        <br>
+        <br>
+        <br>
+        <h1>Total Price <%=totalPrice%> L.E</h1>
+        <button type="button" onclick="location.href = '/cart';" id="cart" class="btn btn-secondary ml-3" style="width: 300px;">Check Out</button>
+   </form>
+
 </body>
 </html>

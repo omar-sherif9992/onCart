@@ -32,43 +32,12 @@ const User = require('./models/user');
 const Item = require('./models/item');
 const Cart = require('./models/cart');
 const uri = process.env.ATLAS_URI;
-var client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true }); //inside request
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true }); //inside request
 //Mongo Atlas Conncetion
-async function makeUSERCOLLECTION() {
-    await client.connect();
-    await client.db('myDB').createCollection("User");
-    await client.close();
-}
-
-async function makeITEMCOLLECTION() {
-    await client.connect();
-    await client.db('myDB').createCollection("Item");
-    await client.close();
-}
 
 
-async function main() {
-    var { MongoClient } = require('mongodb');
-    var client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-    await client.connect();
-    var user = { name: "Hussein", password: "hello" };
-    var user2 = { name: "Husein", password: "hello" };
-    // await makeUSERCOLLECTION();
-    // await makeCARTCOLLECTION();
-    // await makeITEMCOLLECTION();
-    //await addItems();
-    var x = await client.db('myDB').collection('collection1').find().toArray();
-    for (var i = 0; i < x.length; i++) {
-        if (x[i].name == user2.name && x[i].password == user2.password) {
-            console.log("Found");
-        }
-        else {
-            console.log("A7a");
-        }
 
-    }
-    await client.close();
-}
+
 //main();
 
 var currentUser;
@@ -117,12 +86,7 @@ app.post('/registration', async function (req, res) {
 
 //Hussein
 app.post('/home', function (req, res) {
-    /*app.post('/search',function(req,res)
-    {
-       var x = req.body.Search;
-       
-    });*/
-
+    res.redirect("/cart");
 });
 
 app.post('/search', async function (req, res) {
@@ -143,12 +107,10 @@ app.get('/sports', function (req, res) {
     res.render('sports');
 });
 
-app.get('/cart', function (req, res) {
-    res.render('cart');
-});
 
 
 async function search(tmp) {
+    const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     await client.connect();
     var arr = [];
     var items = await client.db('myDB').collection('Item').find().toArray();
@@ -172,9 +134,57 @@ async function search(tmp) {
 //Ziad
 
 async function addToCart(uid, iid, count) {
+    const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     await client.connect();
     await client.db('myDB').collection('Cart').insertOne(new Cart({ userID: uid, itemID: iid, quantity: count }));
     await client.close();
+}
+
+async function handleAddToCartButton(itemName) {
+    const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true }); //inside request
+    await client.connect();
+    try {
+        let items = await client.db('myDB').collection('Item').find().toArray();
+        let carts = await client.db('myDB').collection('Cart').find().toArray();
+        let itemData;
+        for (let i = 0; i < items.length; i++) {
+            if (items[i].name === itemName) {
+                itemData = items[i];
+                break;
+            }
+        }
+        let user = currentUser._id.toString();
+        let item = itemData._id.toString();
+        let count = 1;
+        let flag = false;
+        for (let j = 0; j < carts.length; j++) {
+            if (carts[j].userID === user && carts[j].itemID === item) {
+                await client.db("myDB").collection("Cart").updateOne({ userID: user, itemID: item }, { $set: { quantity: (carts[j].quantity + 1) } });
+                flag = true;
+            }
+
+        }
+        if (!flag) {
+            addToCart(user, item, count);
+        }
+    } finally {
+        await client.close();
+    }
+}
+
+
+function containsItemID(id,userCart){
+    for(let i = 0;i < userCart.length;i++){
+        if(userCart[i].itemID === id){
+            return userCart[i].quantity;
+        }
+    }
+    return 0;
+}
+
+function ItemWithQuantity(item,quan){
+    this.item = item;
+    this.quan = quan;
 }
 
 app.post("/boxing", async function (req, res) {
@@ -189,30 +199,50 @@ app.post("/boxing", async function (req, res) {
 
 app.post("/galaxy", function (req, res) {
     const itemName = "Galaxy S21 Ultra";
+    if (!getCurrentUser()) {
+        res.redirect('/');
+        return;
+    }
     handleAddToCartButton(itemName);
     res.redirect("/galaxy");
 });
 
 app.post("/iphone", function (req, res) {
     const itemName = "iPhone 13 Pro";
+    if (!getCurrentUser()) {
+        res.redirect('/');
+        return;
+    }
     handleAddToCartButton(itemName);
     res.redirect("/iphone");
 });
 
 app.post("/leaves", function (req, res) {
     const itemName = "Leaves Of Grass";
+    if (!getCurrentUser()) {
+        res.redirect('/');
+        return;
+    }
     handleAddToCartButton(itemName);
     res.redirect("/leaves");
 });
 
 app.post("/sun", function (req, res) {
     const itemName = "The Sun and Her Flowers";
+    if (!getCurrentUser()) {
+        res.redirect('/');
+        return;
+    }
     handleAddToCartButton(itemName);
     res.redirect("/sun");
 });
 
 app.post("/tennis", function (req, res) {
     const itemName = "Tennis Racket";
+    if (!getCurrentUser()) {
+        res.redirect('/');
+        return;
+    }
     handleAddToCartButton(itemName);
     res.redirect("/tennis");
 });
@@ -220,6 +250,90 @@ app.post("/tennis", function (req, res) {
 
 
 
+app.get('/cart',async function (req, res) {
+    const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+    await client.connect();
+    if (!getCurrentUser()) {
+        res.redirect('/');
+        return;
+    }
+    let userCart = await client.db('myDB').collection('Cart').find({userID : currentUser._id.toString()}).toArray();
+    let items = await client.db('myDB').collection('Item').find().toArray();
+    let arr = [];
+    let totAmount = 0;
+    let totPrice = 0;
+    for(let i = 0;i < items.length;i++){
+        let q = containsItemID(items[i]._id.toString(),userCart);
+        if(q != 0){
+            let itemData = new ItemWithQuantity(items[i],q);
+            arr.push(itemData);
+            totAmount = totAmount + q;
+            totPrice = totPrice + items[i].price * q;
+        }
+    }
+    res.render('cart',{array : arr, totalAmount : totAmount, totalPrice : totPrice});
+});
+
+async function deleteFromCart(itemName){
+    const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true }); //inside request
+    await client.connect();
+    let items = await client.db('myDB').collection('Item').find().toArray();
+    let carts = await client.db('myDB').collection('Cart').find().toArray();
+    let itemData;
+    for (let i = 0; i < items.length; i++) {
+        if (items[i].name === itemName) {
+            itemData = items[i];
+            break;
+        }
+    }
+    let user = currentUser._id.toString();
+    let item = itemData._id.toString();
+    for (let j = 0; j < carts.length; j++) {
+        if (carts[j].userID === user && carts[j].itemID === item) {
+            if(carts[j].quantity > 1){
+                await client.db("myDB").collection("Cart").updateOne({ userID: user, itemID: item }, { $set: { quantity: (carts[j].quantity - 1) } });
+            }
+            else{
+                await client.db("myDB").collection("Cart").deleteOne({userID: user, itemID: item});
+            }
+        }
+    }
+    client.close();
+}
+async function addCart(itemName){
+    const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true }); //inside request
+    await client.connect();
+    let items = await client.db('myDB').collection('Item').find().toArray();
+    let carts = await client.db('myDB').collection('Cart').find().toArray();
+    let itemData;
+    for (let i = 0; i < items.length; i++) {
+        if (items[i].name === itemName) {
+            itemData = items[i];
+            break;
+        }
+    }
+    let user = currentUser._id.toString();
+    let item = itemData._id.toString();
+    for (let j = 0; j < carts.length; j++) {
+        if (carts[j].userID === user && carts[j].itemID === item) {
+            await client.db("myDB").collection("Cart").updateOne({ userID: user, itemID: item }, { $set: { quantity: (carts[j].quantity + 1) } });
+        }
+    }
+    client.close();
+}
+app.post('/cart', async function(req,res){
+    const action = req.body.action;
+    const itemName = action.substring(0,action.length-2);
+    const verb = action.substring(action.length-1);
+    if (verb === "R") {
+        deleteFromCart(itemName);
+        res.redirect('/cart');
+    }
+    else{
+        addCart(itemName);
+        res.redirect('/cart');
+    }
+});
 
 
 
@@ -296,6 +410,7 @@ function getCurrentUser() {
 }
 
 async function InsertUser(username, pass) {
+    const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     await client.connect();
     var x = new User({ username: username, password: pass, cart: [] });
     currentUser = x;
@@ -303,6 +418,7 @@ async function InsertUser(username, pass) {
     await client.close();
 }
 async function FindUser(username, password) {
+    const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     await client.connect();
     var x = await client.db('myDB').collection('User').find().toArray();
     await client.close();
@@ -323,34 +439,3 @@ async function FindUser(username, password) {
     return false;
 }
 
-async function handleAddToCartButton(itemName) {
-    const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true }); //inside request
-    await client.connect();
-    try {
-        let items = await client.db('myDB').collection('Item').find().toArray();
-        let carts = await client.db('myDB').collection('Cart').find().toArray();
-        let itemData;
-        for (let i = 0; i < items.length; i++) {
-            if (items[i].name === itemName) {
-                itemData = items[i];
-                break;
-            }
-        }
-        let user = currentUser._id.toString();
-        let item = itemData._id.toString();
-        let count = 1;
-        let flag = false;
-        for (let j = 0; j < carts.length; j++) {
-            if (carts[j].userID === user && carts[j].itemID === item) {
-                await client.db("myDB").collection("Cart").updateOne({ userID: user, itemID: item }, { $set: { quantity: (carts[j].quantity + 1) } });
-                flag = true;
-            }
-
-        }
-        if (!flag) {
-            addToCart(user, item, count);
-        }
-    } finally {
-        await client.close();
-    }
-}

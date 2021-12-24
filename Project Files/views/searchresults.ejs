@@ -28,6 +28,7 @@
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
+        <%- include("homecart") %>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
             </ul>
@@ -40,12 +41,12 @@
     </nav>
         <% for(var x of foo){ %>
             <% 
-            if(x.name == "boxing bag") str = '/boxing';
-            else if(x.name == "tennis racket") str = "/tennis";
-            else if(x.name == "leaves of grass") str = "/leaves";
-            else if(x.name == "the sun and her flowers") str = "/sun";
-            else if(x.name == "galaxy s21 ultra") str = "/galaxy";
-            else str = "iphone";
+            if(x.name == "Boxing Bag") str = '/boxing';
+            else if(x.name == "Tennis Racket") str = "/tennis";
+            else if(x.name == "Leaves of Grass") str = "/leaves";
+            else if(x.name == "The Sun and Her Flowers") str = "/sun";
+            else if(x.name == "Galaxy S21 Ultra") str = "/galaxy";
+            else str = "iPhone";
             %>
                 <div class='Huss' style="display:inline-block;margin-inline-start: 5%;" >
                     <img src = <%= x.img %> width = "193" height="300">

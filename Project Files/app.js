@@ -39,10 +39,11 @@ const uri = process.env.ATLAS_URI;
 //Mongo Atlas Conncetion
 
 
-var currentUser;
-
 // omar sherif ali
 app.get('/home', function (req, res) {
+    if (!getCurrentUser(req)) {
+        res.redirect('/');
+    }
     res.render('home');
 });
 
@@ -55,7 +56,7 @@ app.get('/', function (req, res) {
 app.post('/', async function (req, res) {
     let username = (String(req.body.username)).toLowerCase();
     let password = ((String(req.body.password)).toLowerCase());
-    var c = await FindUser(username, password);
+    var c = await FindUser(username, password, req);
     if (c === true) {
         res.redirect('/home');
     }
@@ -74,39 +75,52 @@ app.post('/registration', async function (req, res) {
     let password = (String(req.body.password)).toLowerCase();
     console.log(username);
     console.log(password);
-    if (await FindUser(username, null) == true) {
+    if (await FindUser(username, null, req) == true) {
         res.render('registration', { errors: ["Username is already taken"] });
     }
     else {
-        InsertUser(username, password);
+        InsertUser(username, password, req);
         res.redirect('/home');
     }
 });
 
 //Hussein
 app.post('/home', function (req, res) {
+    if (!getCurrentUser(req)) {
+        res.redirect('/');
+    }
     res.redirect("/cart");
 });
 
 app.post('/search', async function (req, res) {
+    if (!getCurrentUser(req)) {
+        res.redirect('/');
+    }
     var x = req.body.Search;
     var arr = await search(x);
     res.render('searchresults', { foo: arr, str: "" });
 });
 
 app.get('/phones', function (req, res) {
+    if (!getCurrentUser(req)) {
+        res.redirect('/');
+    }
     res.render('phones');
 });
 
 app.get('/books', function (req, res) {
+    if (!getCurrentUser(req)) {
+        res.redirect('/');
+    }
     res.render('books');
 });
 
 app.get('/sports', function (req, res) {
+    if (!getCurrentUser(req)) {
+        res.redirect('/');
+    }
     res.render('sports');
 });
-
-
 
 async function search(tmp) {
     const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -139,7 +153,7 @@ async function addToCart(uid, iid, count) {
     await client.close();
 }
 
-async function handleAddToCartButton(itemName) {
+async function handleAddToCartButton(itemName, req) {
     const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true }); //inside request
     await client.connect();
     try {
@@ -152,7 +166,7 @@ async function handleAddToCartButton(itemName) {
                 break;
             }
         }
-        let user = currentUser._id.toString();
+        let user = getCurrentUser(req)._id.toString();
         let item = itemData._id.toString();
         let count = 1;
         let flag = false;
@@ -188,61 +202,61 @@ function ItemWithQuantity(item,quan){
 
 app.post("/boxing", async function (req, res) {
     const itemName = "Boxing Bag";
-    if (!getCurrentUser()) {
+    if (!getCurrentUser(req)) {
         res.redirect('/');
         return;
     }
-    handleAddToCartButton(itemName);
+    handleAddToCartButton(itemName, req);
     res.redirect("/boxing");
 });
 
 app.post("/galaxy", function (req, res) {
     const itemName = "Galaxy S21 Ultra";
-    if (!getCurrentUser()) {
+    if (!getCurrentUser(req)) {
         res.redirect('/');
         return;
     }
-    handleAddToCartButton(itemName);
+    handleAddToCartButton(itemName, req);
     res.redirect("/galaxy");
 });
 
 app.post("/iphone", function (req, res) {
     const itemName = "iPhone 13 Pro";
-    if (!getCurrentUser()) {
+    if (!getCurrentUser(req)) {
         res.redirect('/');
         return;
     }
-    handleAddToCartButton(itemName);
+    handleAddToCartButton(itemName, req);
     res.redirect("/iphone");
 });
 
 app.post("/leaves", function (req, res) {
     const itemName = "Leaves Of Grass";
-    if (!getCurrentUser()) {
+    if (!getCurrentUser(req)) {
         res.redirect('/');
         return;
     }
-    handleAddToCartButton(itemName);
+    handleAddToCartButton(itemName, req);
     res.redirect("/leaves");
 });
 
 app.post("/sun", function (req, res) {
     const itemName = "The Sun and Her Flowers";
-    if (!getCurrentUser()) {
+    if (!getCurrentUser(req)) {
         res.redirect('/');
         return;
     }
-    handleAddToCartButton(itemName);
+    handleAddToCartButton(itemName, req);
     res.redirect("/sun");
 });
 
 app.post("/tennis", function (req, res) {
     const itemName = "Tennis Racket";
-    if (!getCurrentUser()) {
+    if (!getCurrentUser(req)) {
         res.redirect('/');
         return;
     }
-    handleAddToCartButton(itemName);
+    handleAddToCartButton(itemName, req);
     res.redirect("/tennis");
 });
 
@@ -252,11 +266,11 @@ app.post("/tennis", function (req, res) {
 app.get('/cart',async function (req, res) {
     const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     await client.connect();
-    if (!getCurrentUser()) {
+    if (!getCurrentUser(req)) {
         res.redirect('/');
         return;
     }
-    let userCart = await client.db('myDB').collection('Cart').find({userID : currentUser._id.toString()}).toArray();
+    let userCart = await client.db('myDB').collection('Cart').find({userID : getCurrentUser()._id.toString()}).toArray();
     let items = await client.db('myDB').collection('Item').find().toArray();
     let arr = [];
     let totAmount = 0;
@@ -273,7 +287,7 @@ app.get('/cart',async function (req, res) {
     res.render('cart',{array : arr, totalAmount : totAmount, totalPrice : totPrice});
 });
 
-async function deleteFromCart(itemName){
+async function deleteFromCart(itemName, req){
     const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true }); //inside request
     await client.connect();
     let items = await client.db('myDB').collection('Item').find().toArray();
@@ -285,7 +299,7 @@ async function deleteFromCart(itemName){
             break;
         }
     }
-    let user = currentUser._id.toString();
+    let user = getCurrentUser(req)._id.toString();
     let item = itemData._id.toString();
     for (let j = 0; j < carts.length; j++) {
         if (carts[j].userID === user && carts[j].itemID === item) {
@@ -299,7 +313,7 @@ async function deleteFromCart(itemName){
     }
     client.close();
 }
-async function addCart(itemName){
+async function addCart(itemName, req){
     const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true }); //inside request
     await client.connect();
     let items = await client.db('myDB').collection('Item').find().toArray();
@@ -311,7 +325,7 @@ async function addCart(itemName){
             break;
         }
     }
-    let user = currentUser._id.toString();
+    let user = getCurrentUser(req)._id.toString();
     let item = itemData._id.toString();
     for (let j = 0; j < carts.length; j++) {
         if (carts[j].userID === user && carts[j].itemID === item) {
@@ -321,79 +335,64 @@ async function addCart(itemName){
     client.close();
 }
 app.post('/cart', async function(req,res){
+    if (!getCurrentUser(req)) {
+        res.redirect('/');
+    }
     const action = req.body.action;
     const itemName = action.substring(0,action.length-2);
     const verb = action.substring(action.length-1);
     if (verb === "R") {
-        deleteFromCart(itemName);
+        deleteFromCart(itemName, req);
         res.redirect('/cart');
     }
     else{
-        addCart(itemName);
+        addCart(itemName, req);
         res.redirect('/cart');
     }
 });
 
-
-
-
-
-//Seif
-app.post('/books', function (req, res) {
-    if (document.getElementById("sun").clicked == true) {
-        res.redirect('/sun');
-    }
-    if (document.getElementById("leaves").clicked == true) {
-        res.redirect('/leaves');
-    }
-});
-
-
-
-app.post('/phones', function (req, res) {
-    if (document.getElementById("iphone").clicked == true) {
-        res.redirect('/iphone');
-    }
-    if (document.getElementById("galaxy").clicked == true) {
-        res.redirect('/galaxy');
-    }
-});
-
-app.post('/sports', function (req, res) {
-    if (document.getElementById("boxing").clicked == true) {
-        res.redirect('/boxing');
-    }
-    if (document.getElementById("tennis").clicked == true) {
-        res.redirect('/tennis');
-    }
-});
-
-
-
-
-
-
 app.get('/sun', function (req, res) {
+    if (!getCurrentUser(req)) {
+        res.redirect('/');
+        return;
+    }
     res.render('sun');
 });
 
 app.get('/leaves', function (req, res) {
+    if (!getCurrentUser(req)) {
+        res.redirect('/');
+        return;
+    }
     res.render('leaves');
 });
 app.get('/boxing', function (req, res) {
-    if (!getCurrentUser()) {
+    if (!getCurrentUser(req)) {
         res.redirect('/');
         return;
     }
     res.render('boxing');
 });
+
 app.get('/tennis', function (req, res) {
+    if (!getCurrentUser(req)) {
+        res.redirect('/');
+        return;
+    }
     res.render('tennis');
 });
 app.get('/iphone', function (req, res) {
+    if (!getCurrentUser(req)) {
+        res.redirect('/');
+        return;
+    }
     res.render('iphone');
 });
 app.get('/galaxy', function (req, res) {
+    if (!getCurrentUser(req)) {
+        res.redirect('/');
+        return;
+    }
     res.render('galaxy');
 });
 
@@ -404,31 +403,35 @@ app.use((req, res) => {
     res.status(404).render('error');
 });
 
-function getCurrentUser() {
-    return currentUser;
+function getCurrentUser(req) {
+    return req.session.user;    
 }
 
-async function InsertUser(username, pass) {
+function setCurrentUser(req, user) {
+    req.session.user = user;
+}
+
+async function InsertUser(username, pass, req) {
     const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     await client.connect();
-    var x = new User({ username: username, password: pass, cart: [] });
-    currentUser = x;
-    await client.db('myDB').collection('User').insertOne(x);
+    const user = new User({ username: username, password: pass });
+    setCurrentUser(req, user);
+    await client.db('myDB').collection('User').insertOne(user);
     await client.close();
 }
-async function FindUser(username, password) {
+async function FindUser(username, password, req) {
     const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     await client.connect();
-    var x = await client.db('myDB').collection('User').find().toArray();
+    const user = await client.db('myDB').collection('User').find().toArray();
     await client.close();
-    for (var i = 0; i < x.length; i++) {
-        if (x[i].username === username) {
+    for (var i = 0; i < user.length; i++) {
+        if (user[i].username === username) {
             if (password == null) {
                 return true;
             }
             else {
-                if (x[i].password == password) {
-                    currentUser = x[i];
+                if (user[i].password == password) {
+                    setCurrentUser(req, user);
                     return true;
                 }
                 else return false;

@@ -10,6 +10,9 @@ const app = express();
 const port = 3020; //note :form action should be written in it the route
 const md5 = require('md5');
 const session = require('express-session');
+const { main } = require('./createdata.js');
+
+// main();
 
 app.listen(port, () => {
     console.log(`Website is running at url http://localhost:${port}`);
@@ -32,13 +35,9 @@ const User = require('./models/user');
 const Item = require('./models/item');
 const Cart = require('./models/cart');
 const uri = process.env.ATLAS_URI;
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true }); //inside request
+
 //Mongo Atlas Conncetion
 
-
-
-
-//main();
 
 var currentUser;
 

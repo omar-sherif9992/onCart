@@ -67,19 +67,16 @@ app.post('/', async function (req, res) {
 
 app.get('/registration', function (req, res) {
     res.render('registration', { errors: [] });
-
 });
 
 app.post('/registration', async function (req, res) {
     let username = (String(req.body.username)).toLowerCase();
     let password = (String(req.body.password)).toLowerCase();
-    console.log(username);
-    console.log(password);
     if (await FindUser(username, null, req) == true) {
         res.render('registration', { errors: ["Username is already taken"] });
     }
     else {
-        InsertUser(username, password, req);
+        await InsertUser(username, password, req);
         res.redirect('/home');
     }
 });
@@ -178,7 +175,7 @@ async function handleAddToCartButton(itemName, req) {
 
         }
         if (!flag) {
-            addToCart(user, item, count);
+            await addToCart(user, item, count);
         }
     } finally {
         await client.close();
@@ -206,57 +203,57 @@ app.post("/boxing", async function (req, res) {
         res.redirect('/');
         return;
     }
-    handleAddToCartButton(itemName, req);
+    await handleAddToCartButton(itemName, req);
     res.redirect("/boxing");
 });
 
-app.post("/galaxy", function (req, res) {
+app.post("/galaxy", async function (req, res) {
     const itemName = "Galaxy S21 Ultra";
     if (!getCurrentUser(req)) {
         res.redirect('/');
         return;
     }
-    handleAddToCartButton(itemName, req);
+    await handleAddToCartButton(itemName, req);
     res.redirect("/galaxy");
 });
 
-app.post("/iphone", function (req, res) {
+app.post("/iphone", async function (req, res) {
     const itemName = "iPhone 13 Pro";
     if (!getCurrentUser(req)) {
         res.redirect('/');
         return;
     }
-    handleAddToCartButton(itemName, req);
+    await handleAddToCartButton(itemName, req);
     res.redirect("/iphone");
 });
 
-app.post("/leaves", function (req, res) {
+app.post("/leaves", async function (req, res) {
     const itemName = "Leaves Of Grass";
     if (!getCurrentUser(req)) {
         res.redirect('/');
         return;
     }
-    handleAddToCartButton(itemName, req);
+    await handleAddToCartButton(itemName, req);
     res.redirect("/leaves");
 });
 
-app.post("/sun", function (req, res) {
+app.post("/sun", async function (req, res) {
     const itemName = "The Sun and Her Flowers";
     if (!getCurrentUser(req)) {
         res.redirect('/');
         return;
     }
-    handleAddToCartButton(itemName, req);
+    await handleAddToCartButton(itemName, req);
     res.redirect("/sun");
 });
 
-app.post("/tennis", function (req, res) {
+app.post("/tennis", async function (req, res) {
     const itemName = "Tennis Racket";
     if (!getCurrentUser(req)) {
         res.redirect('/');
         return;
     }
-    handleAddToCartButton(itemName, req);
+    await handleAddToCartButton(itemName, req);
     res.redirect("/tennis");
 });
 
@@ -270,7 +267,7 @@ app.get('/cart',async function (req, res) {
         res.redirect('/');
         return;
     }
-    let userCart = await client.db('myDB').collection('Cart').find({userID : getCurrentUser()._id.toString()}).toArray();
+    let userCart = await client.db('myDB').collection('Cart').find({userID : getCurrentUser(req)._id.toString()}).toArray();
     let items = await client.db('myDB').collection('Item').find().toArray();
     let arr = [];
     let totAmount = 0;
@@ -342,11 +339,11 @@ app.post('/cart', async function(req,res){
     const itemName = action.substring(0,action.length-2);
     const verb = action.substring(action.length-1);
     if (verb === "R") {
-        deleteFromCart(itemName, req);
+        await deleteFromCart(itemName, req);
         res.redirect('/cart');
     }
     else{
-        addCart(itemName, req);
+        await addCart(itemName, req);
         res.redirect('/cart');
     }
 });
@@ -422,16 +419,16 @@ async function InsertUser(username, pass, req) {
 async function FindUser(username, password, req) {
     const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     await client.connect();
-    const user = await client.db('myDB').collection('User').find().toArray();
+    const users = await client.db('myDB').collection('User').find().toArray();
     await client.close();
-    for (var i = 0; i < user.length; i++) {
-        if (user[i].username === username) {
+    for (var i = 0; i < users.length; i++) {
+        if (users[i].username === username) {
             if (password == null) {
                 return true;
             }
             else {
-                if (user[i].password == password) {
-                    setCurrentUser(req, user);
+                if (users[i].password == password) {
+                    setCurrentUser(req, users[i]);
                     return true;
                 }
                 else return false;

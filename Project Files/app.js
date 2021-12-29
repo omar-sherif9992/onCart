@@ -65,6 +65,11 @@ app.post('/', async function (req, res) {
     }
 });
 
+app.post('/logout', async function(req,res){
+    setCurrentUser(req,null);
+    res.redirect('/');
+});
+
 app.get('/registration', function (req, res) {
     res.render('registration', { errors: [] });
 });
@@ -228,7 +233,7 @@ app.post("/iphone", async function (req, res) {
 });
 
 app.post("/leaves", async function (req, res) {
-    const itemName = "Leaves Of Grass";
+    const itemName = "Leaves of Grass";
     if (!getCurrentUser(req)) {
         res.redirect('/');
         return;

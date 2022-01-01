@@ -57,5 +57,8 @@
                     <button onclick="location.href = '<%=str%>';" style="border-radius: 12px;color:aliceblue;font-size: large;background-color:brown;">View</button>
                 </div>
         <% } %>
+        <% if(foo.length === 0){ %>
+            <h1 style="color: green;text-align: center;font-size: x-large;margin: auto;">Nothing is Found</h1>
+        <% } %>
 </body>
 </html>

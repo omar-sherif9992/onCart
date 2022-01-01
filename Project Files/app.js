@@ -14,7 +14,7 @@ const { main } = require('./createdata.js');
 
 // main();
 
-app.listen(port, () => {
+app.listen(process.env.PORT || port, () => {
     console.log(`Website is running at url http://localhost:${port}`);
 });
 

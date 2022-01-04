@@ -40,11 +40,12 @@ const uri = process.env.ATLAS_URI;
 
 
 // omar sherif ali
-app.get('/home', function (req, res) {
+app.get('/home', async function (req, res) {
     if (!getCurrentUser(req)) {
         res.redirect('/');
     }
-    res.render('home');
+    const cartData = await getCart(req);
+    res.render('home',cartData);
 });
 
 
@@ -100,28 +101,32 @@ app.post('/search', async function (req, res) {
     }
     var x = req.body.Search;
     var arr = await search(x);
-    res.render('searchresults', { foo: arr, str: "" });
+    const cartData = await getCart(req);
+    res.render('searchresults', { foo: arr, str: "" ,totalAmount:cartData.totalAmount});
 });
 
-app.get('/phones', function (req, res) {
+app.get('/phones', async function (req, res) {
     if (!getCurrentUser(req)) {
         res.redirect('/');
     }
-    res.render('phones');
+    const cartData = await getCart(req);
+    res.render('phones',cartData);
 });
 
-app.get('/books', function (req, res) {
+app.get('/books', async function (req, res) {
     if (!getCurrentUser(req)) {
         res.redirect('/');
     }
-    res.render('books');
+    const cartData = await getCart(req);
+    res.render('books',cartData);
 });
 
-app.get('/sports', function (req, res) {
+app.get('/sports', async function (req, res) {
     if (!getCurrentUser(req)) {
         res.redirect('/');
     }
-    res.render('sports');
+    const cartData = await getCart(req);
+    res.render('sports',cartData);
 });
 
 async function search(tmp) {
@@ -264,14 +269,9 @@ app.post("/tennis", async function (req, res) {
 
 
 
-
-app.get('/cart',async function (req, res) {
+async function getCart(req){
     const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     await client.connect();
-    if (!getCurrentUser(req)) {
-        res.redirect('/');
-        return;
-    }
     let userCart = await client.db('myDB').collection('Cart').find({userID : getCurrentUser(req)._id.toString()}).toArray();
     let items = await client.db('myDB').collection('Item').find().toArray();
     let arr = [];
@@ -286,7 +286,16 @@ app.get('/cart',async function (req, res) {
             totPrice = totPrice + items[i].price * q;
         }
     }
-    res.render('cart',{array : arr, totalAmount : totAmount, totalPrice : totPrice});
+    return {array : arr, totalAmount : totAmount, totalPrice : totPrice};
+}
+
+app.get('/cart',async function (req, res) {
+    if (!getCurrentUser(req)) {
+        res.redirect('/');
+        return;
+    }
+    const cartData = await getCart(req);
+    res.render('cart',cartData);
 });
 
 async function deleteFromCart(itemName, req){
@@ -353,49 +362,55 @@ app.post('/cart', async function(req,res){
     }
 });
 
-app.get('/sun', function (req, res) {
+app.get('/sun', async function (req, res) {
     if (!getCurrentUser(req)) {
         res.redirect('/');
         return;
     }
-    res.render('sun');
+    const cartData = await getCart(req);
+    res.render('sun',cartData);
 });
 
-app.get('/leaves', function (req, res) {
+app.get('/leaves', async function (req, res) {
     if (!getCurrentUser(req)) {
         res.redirect('/');
         return;
     }
-    res.render('leaves');
+    const cartData = await getCart(req);
+    res.render('leaves',cartData);
 });
-app.get('/boxing', function (req, res) {
+app.get('/boxing', async function (req, res) {
     if (!getCurrentUser(req)) {
         res.redirect('/');
         return;
     }
-    res.render('boxing');
+    const cartData = await getCart(req);
+    res.render('boxing',cartData);
 });
 
-app.get('/tennis', function (req, res) {
+app.get('/tennis', async function (req, res) {
     if (!getCurrentUser(req)) {
         res.redirect('/');
         return;
     }
-    res.render('tennis');
+    const cartData = await getCart(req);
+    res.render('tennis',cartData);
 });
-app.get('/iphone', function (req, res) {
+app.get('/iphone', async function (req, res) {
     if (!getCurrentUser(req)) {
         res.redirect('/');
         return;
     }
-    res.render('iphone');
+    const cartData = await getCart(req);
+    res.render('iphone',cartData);
 });
-app.get('/galaxy', function (req, res) {
+app.get('/galaxy', async function (req, res) {
     if (!getCurrentUser(req)) {
         res.redirect('/');
         return;
     }
-    res.render('galaxy');
+    const cartData = await getCart(req);
+    res.render('galaxy',cartData);
 });
 
 

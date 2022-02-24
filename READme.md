@@ -49,9 +49,7 @@
 The objective of this project is developing a network application based on the
 client/server architecture. You are required to build a web application that is used as a simple shopping
 website. The website allows the users to lookup products descriptions, types, manufacturers… etc. Users
-should be allowed to create an account, add items to their “cart” and search for products. The website should
-initially be hosted on your PCs “local host” and when the site development phase is done, you should host
-it online on the cloud platform heroku.com.
+should be allowed to create an account, add items to their “cart” and search for products. 
 
 ## ⚠️ Disclaimer  
 Users who will Use this Data should only use it for Practice and <strong>not for Commercial Purposes !</strong>

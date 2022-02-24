@@ -31,172 +31,60 @@
 
 
 <div align="center">
-  <a href="https://osa-warehouse-api.herokuapp.com/">
-    <img src="./SVGs/warehouse-icon.png" alt="Logo" width="80" height="80">
-  </a>
+    <img src="./cart-svgrepo-com.svg" alt="Logo" width="80" height="80">
+
 
   <h3 align="center">onCart</h3>
 
   <p align="center">
     An E-commerce Website !
     <br />
- 
-        ·
-    <a href="mailto:osa.helpme@gmail.com?subject=UnExpected%20Error%20Occured&body=Sorry%20for%20the%20inconvenience%2C%20Please%20describe%20Your%20situation%20and%20emphasis%20the%20Endpoint%20!%0A">Report Bug</a>
+	  ·<a href="mailto:osa.helpme@gmail.com?subject=UnExpected%20Error%20Occured&body=Sorry%20for%20the%20inconvenience%2C%20Please%20describe%20Your%20situation%20and%20emphasis%20the%20Endpoint%20!%0A">Report Bug</a>
    	      ·
     <a href="mailto:osa.helpme@gmail.com?subject=I%20want%20to%20be%20a%20Contributor%20to%20onCart&body=Dear%20Omar%20Sherif%2C%0A%0A%3D%3D%3E%20name%0A%3D%3D%3E%20email%0A%3D%3D%3E%20phone%20number%0A%3D%3D%3E%20github%20link%0A%0A%0A%0ANeeded%20Skills%3A%0A%0A1-Familiar%20with%20Python%0A2-Familiar%20with%20BeautifulSoup%0A3-Familiar%20with%20csv%0A4-Familiar%20with%20pandas%20%0A%0AI%20acquire%20all%20those%20needed%20Skills.%0A%0Aregards">Be a Contributer</a>
   </p>
 </div>
 
-<a href="https://osa-warehouse-api.herokuapp.com/register">WareHouse API</a>
 
 ## 💡 Description
-As someone who is willing to practice creating e-commerce websites, It is a struggle to find some Real and High Quality Data as a placeholder while on development stage. So this API's job is to help Developer's to reach out to this data that can help them and make it easier .
+The objective of this project is developing a network application based on the
+client/server architecture. You are required to build a web application that is used as a simple shopping
+website. The website allows the users to lookup products descriptions, types, manufacturers… etc. Users
+should be allowed to create an account, add items to their “cart” and search for products. The website should
+initially be hosted on your PCs “local host” and when the site development phase is done, you should host
+it online on the cloud platform heroku.com.
 
 ## ⚠️ Disclaimer  
 Users who will Use this Data should only use it for Practice and <strong>not for Commercial Purposes !</strong>
 
-
-	
-	
-
-<h3> User Features </h3>
-<hr>
+<h3>Components</h3>
+	<hr>
 <ul>
-<li>name : represents the User's name <strong>Required </strong></li>
-<li>email : represents the User's email <strong>Required</strong></li>
-<li>phone : represents the User's phone <strong>Required</strong></li>
-<li>country : represents the User's country <strong>Required</strong></li>
-<li>api_key : represents the User's Api Key which is the key that give's access to the User to use the WareHouse API <strong>Required</strong></li>
-<li>status : represents the User's status either Company or User <strong>Required</strong></li>
-<ul>
-<li> <em><strong>Company</strong></em></li>
-
-<ul>
-<li>service : represents the Company's service <strong>Required</strong></li>
-<li>company_url : represents the Company's url <strong>Required</strong></li>
-</ul>
-</ul>
-<ul>
-<li> <em><strong>User</strong></em></li>
-<ul>
-<li>birth_date : represents the User's birth date <strong>Required</strong></li>
-<li>gender : represents the User's gender <strong>Required</strong></li>
-</ul>
-</ul>
-
-<li>since : represents when did the user signed up for the WareHouse API auto <strong>Not-Required</strong></li>
-
+	<li>Users Login (Main Page):Registered users should be allowed to log in to their accounts using their stored username and password. If an unregistered user tries to log in an error message should be displayed.</li>
+	<li>User Registration: Users should be allowed to create an account using a unique username and a password and the users’ information should be stored in a database using MongoDB. If the user tried to register using
+an already taken username, an error message should be displayed.</li>
+	<li>Home Page:The home page is the first page that should be encountered by the users when they log in to their accounts. It contains several item types and a button to view the user’s “cart”. When the user clicks
+on any item type, they should be redirected to that type’s page.</li>
+	<li>Type Page:The type page contains all the items within this type. When a user clicks on any item’s name, they should be redirected to that item’s page.</li>
+	<li>Item Page:
+The item page contains a description for the item. The page should also contain an embedded link
+for a video describing the item which can be streamed by the user. Please don’t copy the video
+itself to the folder so that it doesn’t exceed the allowed size. Finally, an “add to cart” button should
+be added. The button adds this item to the user’s “cart” in the database.</li>
+	<li>Cart Page:
+The cart page contains the items that the user previously added using the “add to cart” button. A
+“view cart” button should be added to the home page that directs the user to their own cart page.</li>
+	<li>Search:
+A search bar will be displayed in all pages except for the registration and login pages. The search
+will be done using items names only. The search result is either an “item not found” message if the
+item was not available in the database or a list of the items that contain the search keyword in their
+names. The search results should be clickable and they direct you to that specific item’s page.</li>
 </ul>
 <p align="right">(<a href="#top">back to top</a>)</p>
-
-
-<h3> Product Features </h3>
-<hr>
-<ul>
-<li>product_name : represents the Product's name <strong>Required</strong></li>
-<li>category : represents Category of the product <strong>Required</strong></li>
-<li>sub_category : represents Sub-category of the product <strong>Not-Required</strong>as not every Company has that feature</li>
-<li>brand : represents the Product's Brand    <strong>Required</strong></li>
-<li>price : represents the Product's  Price    <strong>Required</strong></li>
-<li>img_url : represents the Product's img_url  <strong>Required</strong></li>
-<li>category : represents the if the Product is in the WareHouse or out of Stock<strong>Required</strong></li>
-<li>delivery : represents the if Product have Delivery option    <strong>Required</strong></li>
-<li>product_description : represents the Product's description  <strong>Required</strong></li>
-<li>currency : represents the Product's price currency <strong>Required</strong></li>
-
-<li>product_url : represents the Product's original page url <strong>Required</strong></li>
-<li>source_name : represents the Product's price currency <strong>Required</strong></li>
-<li>rating : represents the Product's rating <strong>Required</strong></li>
-<li>release_date : represents when did the Product is Uploaded to the API   <strong>Required</strong></li>
-<li>product_id : represents the Product's id which is hashed unique for every product for the owner can share to user who doesnt own it so he can view and edit it. <strong>Required</strong></li>
-<li>secure : hashes  the product_id  for a product and it will be sent via email with it qr-code for the owner can share to user who doesn't own it so he can view and edit it. <strong>Not-Required </strong>
-default = false</li>	
-</ul>
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-
-
-<h3>JSON Data Format Example :</h3>
-
-```{
-    "response": {
-        "data": {
-            "number_of_products": 1,
-            "products": [
-                {
-                    "product_1": {
-                        "owner": {
-                            "country": "Egypt",
-                            "email": "demo@gmail.com",
-                            "gender": "Male",
-                            "name": "Nour",
-                            "number_of_products": 1,
-                            "phone": "+021008757777",
-                            "since": "October 7,2021",
-                            "status": "User"
-                        },
-                        "product": {
-                            "available": true,
-                            "brand": "Polo",
-                            "category": "Clothes",
-                            "currency": "EGP",
-                            "delivery": true,
-                            "img_url": "https://m.media-amazon.com/images/I/610zGpHMF0L._AC_SY550_.jpg",
-                            "price": 46,
-                            "product_description": "100% Cotton",
-                            "product_name": "Us. Polo Assn. Cotton Contrast-Logo Ribbed Trims Round-Neck Sweatshirt For Boys",
-                            "product_url": "https://www.amazon.eg/-/en/US-Polo-Assn-Contrast-Logo-Round-Neck/dp/B08WJNLZF6/ref=lp_18018165031_1_11?th=1",
-                            "rating": "4.2 out of 5",
-                            "release_date": "October 7,2021",
-                            "source_name": "Amazon"
-                        }
-                    }
-                }
-            ]
-        },
-        "success_message": "Products Found"
-    },
-    "status": "success"
-}
-```
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-
-
-## 💻️ Languages & Concepts Used
-
-* Python [(programming)](https://en.wikipedia.org/wiki/Python_(programming_language))
-* [Object-oriented programming (OOP)](https://en.wikipedia.org/wiki/Object-oriented_programming#:~:text=Object%2Doriented%20programming%20(OOP),(often%20known%20as%20methods)) (Encapsulation, Abstraction, Inheritance, and Polymorphism)
-* [Exception Handling](https://en.wikipedia.org/wiki/Exception_handling)
-* [Flask](https://flask.palletsprojects.com/en/2.0.x/)
-* Databases: SQLite using [SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com/en/2.x/) (locally) and [PostgreSQL](https://www.heroku.com/postgres) (externally)
-* HTML
-* CSS
-* Javascript
-* [Bootstrap](https://getbootstrap.com/)
-* [Jinja2](https://jinja.palletsprojects.com/en/3.0.x/) (For templating)
-* [Heroku](https://www.heroku.com/) (Website Deployment)
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
 
 ## Postman
 <p>Used Postman to help me to test my program and write the <a href="https://documenter.getpostman.com/view/17286684/UUy65PqF">Documentation</a></p>
 <a href="https://www.getpostman.com/"><img src="https://assets.getpostman.com/common-share/postman-logo-horizontal-320x132.png" /></a><br />
-
-
-
-# FrameWork
-* [Flask](https://en.wikipedia.org/wiki/Flask_(web_framework))
-
-## Libraries Used
-* Selenium : for website flow testing
-* BeatufilSoup : for Scraping the Product's data
-* qrcode : for creating a unique Qrcode for User's Inventory
-* Pandas & Csv : for creating and manipulating Excel files uploaded and downloaded by the user.
-* urlshortners: for creating short urls
 
 
 

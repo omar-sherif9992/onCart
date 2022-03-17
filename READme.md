@@ -8,7 +8,6 @@
 [![Express](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)](https://GitHub.com/Naereen/badges/)
 [![HTML](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)](https://html.com/html5/)
 [![CSS](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)](https://en.wikipedia.org/wiki/CSS)
-[![Pandas](https://img.shields.io/badge/Pandas-2C2D72?style=for-the-badge&logo=pandas&logoColor=white)](https://pandas.pydata.org/)
 [![Json](https://img.shields.io/badge/json-5E5C5C?style=for-the-badge&logo=json&logoColor=white)](https://www.json.org/json-en.html)
 [![Bootstrap](https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white)](https://getbootstrap.com/)
 [![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
@@ -75,10 +74,25 @@ names. The search results should be clickable and they direct you to that specif
 </ul>
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-## Postman
-<p>Used Postman to help me to test my program and write the <a href="https://documenter.getpostman.com/view/17286684/UUy65PqF">Documentation</a></p>
-<a href="https://www.getpostman.com/"><img src="https://assets.getpostman.com/common-share/postman-logo-horizontal-320x132.png" /></a><br />
 
+
+## 💻️ Languages & Concepts Used
+
+* Databases:[MongoDB](https://en.wikipedia.org/wiki/Microsoft_SQL_Server)
+* [Nodejs](https://nodejs.org/en/)
+* [Expressjs](https://expressjs.com/)
+* [ejs](https://ejs.co/)
+* [Object-oriented programming (OOP)](https://en.wikipedia.org/wiki/Object-oriented_programming#:~:text=Object%2Doriented%20programming%20(OOP),(often%20known%20as%20methods)) (Encapsulation, Abstraction, Inheritance, and Polymorphism)
+* [Exception Handling](https://en.wikipedia.org/wiki/Exception_handling)
+* HTML
+* CSS
+* [Bootstrap](https://getbootstrap.com/)
+* Javascript
+* Postman API
+
+
+
+<p align="right">(<a href="#top">back to top</a>)</p>
 
 
 
